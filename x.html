@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #000b1c;
+            font-family: 'Brush Script MT', cursive;
+        }
+
+        .container {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .intro-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #000b1c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeOut 1.5s 5.5s forwards;
+        }
+
+        .intro-text {
+            font-family: 'Righteous', cursive;
+            font-size: 3vw;
+            color: #FFD700;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            opacity: 0;
+            width: 100%;
+            animation: textAppear 2s 1s forwards, textGlow 2s infinite;
+        }
+
+        @import url('https://fonts.cdnfonts.com/css/albertus-mt');
+        
+        .logo-letter {
+            display: inline-block;
+            font-family: 'Albertus MT', serif;
+                background: linear-gradient(45deg, 
+                #FF0000 0%, 
+                #8F00FF 16.66%,
+                #00FF00 33.33%,
+                #FF7F00 50%,
+                #4B0082 66.66%,
+                #FFFF00 83.33%, 
+                #0000FF 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: colorShift 3s infinite alternate;
+        }
+
+        @keyframes colorShift {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        /* Fireworks Animation */
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: explode 1.5s forwards;
+        }
+
+        @keyframes textAppear {
+            0% { opacity: 0; transform: translate(-50%, -30%); }
+            100% { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 20px #FFD700; }
+            50% { text-shadow: 0 0 40px #FFD700, 0 0 60px #FF8C00; }
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(20); opacity: 0; }
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        /* Main Content Adjustments */
+        .main-content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            animation: contentAppear 1s 6.5s forwards;
+        }
+
+        @keyframes contentAppear {
+            0% { opacity: 0; filter: blur(10px); }
+            100% { opacity: 1; filter: blur(0); }
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Righteous&family=Monoton&family=Press+Start+2P&family=Cinzel&display=swap');
+        .heavenly-text {
+            font-size: 5vw;
+            color: #FFD700;
+            position: relative;
+            z-index: 4;
+            text-align: center;
+            perspective: 1000px;
+            width: 100%;
+        }
+
+        .glitch-word {
+            display: inline-block;
+            position: relative;
+            animation: glitchTransition 1.5s forwards;
+            animation-delay: calc(var(--delay) * 0.2s);
+        }
+
+        .glitch-word::before,
+        .glitch-word::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+
+        .glitch-word::before {
+            font-family: 'Papyrus', fantasy;
+            color: #00ffff;
+            animation: glitchBefore 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        .glitch-word::after {
+            font-family: 'Monoton', cursive;
+            color: #FFD700;
+            animation: glitchAfter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        .floating-quote {
+            position: absolute;
+            color: rgba(255,215,0,0.9);
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+            max-width: 250px;
+            text-align: center;
+            filter: blur(0.8px);
+            z-index: 2;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            background: rgba(0,20,40,0.4);
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .meteor {
+            position: absolute;
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fff);
+            animation: meteorShower 3s linear infinite;
+            filter: drop-shadow(0 0 5px white);
+            z-index: 2;
+        }
+
+        .moon {
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            width: 100px;
+            height: 100px;
+            background: #f4f1de;
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(244,241,222,0.5);
+            animation: moonGlow 4s ease-in-out infinite;
+            z-index: 3;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+        }
+
+        @keyframes glitchTransition {
+            0% { font-family: 'Righteous', cursive; transform: translate(0); }
+            20% { font-family: 'Syne Tactile', cursive; transform: translate(-2px, 3px); }
+            40% { font-family: 'Papyrus', fantasy; transform: translate(3px, -2px); }
+            60% { font-family: 'Orbitron', sans-serif; opacity: 0.7; text-shadow: 2px 2px 0 #ff00ff, -2px -2px 0 #00ffff; }
+            80% { opacity: 1; text-shadow: none; }
+            100% { font-family: 'Cinzel', serif;  transform: translate(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 110vh) rotate(5deg); opacity: 0; }
+            30% { opacity: 1; }
+            100% { transform: translate(calc(-50vw + var(--offset)), -110vh) rotate(-5deg); opacity: 0; }
+        }
+
+        @keyframes floatUpAndFade {
+            0% { 
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        @keyframes meteorShower {
+            0% { transform: translate(-100vw, -100vh) rotate(45deg); opacity: 1; }
+            100% { transform: translate(100vw, 100vh) rotate(45deg); opacity: 0; }
+        }
+
+        @keyframes moonGlow {
+            0%, 100% { box-shadow: 0 0 50px rgba(244,241,222,0.5); }
+            50% { box-shadow: 0 0 70px rgba(244,241,222,0.8); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="clickCatcher" style="position: fixed; top:0; left:0; width:100%; height:100%; z-index: 9999; cursor: pointer; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center;">
+        <div style="color: #f0d54e; font-size: 2em; text-align: center;">
+            Click anywhere to start 
+        </div>
+    </div>
+
+    <div class="intro-screen" id="introScreen" style="display: none;">
+        <div class="intro-text">Bringing the 
+            <span class="coldplay-logo">
+                <span class="logo-letter">C</span>
+                <span class="logo-letter">O</span>
+                <span class="logo-letter">L</span>
+                <span class="logo-letter">D</span>
+                <span class="logo-letter">P</span>
+                <span class="logo-letter">L</span>
+                <span class="logo-letter">A</span>
+                <span class="logo-letter">Y</span>
+            </span><br>
+            Experience to You</div>
+        <div id="fireworksContainer"></div>
+    </div>
+
+    <div class="main-content" style="display: none;">
+        <div class="container">
+            <div class="stars" id="stars"></div>
+            <div class="moon"></div>
+            <div id="meteors"></div>
+            
+            <h1 class="heavenly-text" id="glitchText">you are such a heavenly view!!</h1>
+
+            <div id="quotes-container"></div>
+        </div>
+    </div>
+    <audio id="mainAudio" loop style="display: none;">
+        <source src="/home/cdot1984/Downloads/A-Sky-Full-Of-Stars.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const clickCatcher = document.getElementById('clickCatcher');
+        const audioElement = document.getElementById('mainAudio');
+        
+        let audioStarted = false;
+
+        const quotes = [
+            "Someone who chooses you after knowing everything",
+            "You're my north star when I'm lost",
+            "In your chaos, I found clarity",
+            "Your light guides my darkness into glow",
+            "I am your Dobi",
+            "You're the cozy blanket on a rainy day, the warmth when the world feels cold",
+            "Like stars in the night sky, you light up even my darkest moments",
+            "Your love wraps around me like a gentle breeze carrying whispers of forever",
+            "Your heart holds galaxies of kindness, and I'm lucky enough to orbit in your space",
+            "You're the melody that makes my heart dance and my soul sing",
+            "In a world of uncertainty, you're my constant - steady, warm, and true",
+            "Among infinite stars in countless galaxies, my soul recognized yours",
+            "In the constellation of my life, you're the brightest star",
+            "When you hold me, time slows down",
+            "When the world spins too fast, your heartbeat is my anchor",
+            "In your eyes, I see reflections of all the tomorrows I want to share"
+        ];
+
+        let activeQuotes = new Set();
+        const quotesContainer = document.getElementById('quotes-container');
+
+        function getRandomPosition() {
+            const padding = 20; // Minimum distance from edges
+            return {
+                left: padding + Math.random() * (window.innerWidth - 300 - padding * 2),
+                top: padding + Math.random() * (window.innerHeight - 100 - padding * 2)
+            };
+        }
+
+        function checkCollision(pos1, pos2) {
+            const minDistance = 200; // Minimum distance between quotes
+            const dx = pos1.left - pos2.left;
+            const dy = pos1.top - pos2.top;
+            return Math.sqrt(dx * dx + dy * dy) < minDistance;
+        }
+
+        function findValidPosition() {
+            let attempts = 0;
+            let position;
+            
+            do {
+                position = getRandomPosition();
+                let isValid = true;
+                
+                // Check against all active quotes
+                document.querySelectorAll('.floating-quote').forEach(quote => {
+                    const quotePos = {
+                        left: parseFloat(quote.style.left),
+                        top: parseFloat(quote.style.top)
+                    };
+                    if (checkCollision(position, quotePos)) {
+                        isValid = false;
+                    }
+                });
+                
+                if (isValid) return position;
+                attempts++;
+            } while (attempts < 50);
+            
+            return position; // Return last position if no valid position found
+        }
+
+        function createQuote(text) {
+        const quote = document.createElement('div');
+        quote.className = 'floating-quote';
+        quote.textContent = text;
+        
+        const position = findValidPosition();
+        quote.style.left = `${position.left}px`;
+        quote.style.top = `${position.top}px`;
+        
+        // Add random skew parameters
+        const startSkew = `${-10 + Math.random() * 20}deg`;
+        const midSkew = `${-15 + Math.random() * 30}deg`;
+        const endSkew = `${-10 + Math.random() * 20}deg`;
+        
+        // Create dynamic animation
+        const animationName = `float-${Math.random().toString(36).substr(2, 9)}`;
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ${animationName} {
+                0% { 
+                    transform: translate(-100vw, 100vh) skew(${startSkew});
+                    opacity: 0;
+                }
+                20% {
+                    transform: translate(-50vw, 50vh) skew(${midSkew});
+                    opacity: 1;
+                }
+                50% {
+                    transform: translate(0, 0) skew(${-midSkew});
+                }
+                80% {
+                    transform: translate(50vw, -50vh) skew(${midSkew});
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(100vw, -100vh) skew(${endSkew});
+                    opacity: 0;
+                }
+            }
+        `;
+        
+        document.head.appendChild(style);
+        quote.style.animation = `${animationName} ${20 + Math.random() * 10}s linear forwards`;
+        
+        quotesContainer.appendChild(quote);
+        
+        // Remove quote after animation
+        quote.addEventListener('animationend', () => {
+            quote.remove();
+            activeQuotes.delete(text);
+            document.head.removeChild(style);
+        });
+        
+        activeQuotes.add(text);
+    }
+
+        function updateQuotes() {
+            if (activeQuotes.size < 4) {
+                const availableQuotes = quotes.filter(quote => !activeQuotes.has(quote));
+                if (availableQuotes.length > 0) {
+                    const randomQuote = availableQuotes[Math.floor(Math.random() * availableQuotes.length)];
+                    createQuote(randomQuote);
+                }
+            }
+        }
+
+        function initQuotes() {
+            setInterval(updateQuotes, 3000); // Check every 3 seconds if we need new quotes
+        }
+
+        function startExperience() {
+            if(audioStarted) return;
+            audioStarted = true;
+            
+            clickCatcher.style.display = 'none';
+            document.getElementById('introScreen').style.display = 'block';
+            
+            audioElement.play().catch(error => {
+                console.log('Audio play failed:', error);
+            });
+            
+            createFireworks();
+            
+            setTimeout(() => {
+                document.getElementById('introScreen').style.display = 'none';
+                document.querySelector('.main-content').style.display = 'block';
+                createStars();
+                createMeteors();
+                initGlitchText();
+                initQuotes();
+            }, 7000);
+        }
+
+        document.addEventListener('click', startExperience);
+        document.addEventListener('keypress', startExperience);
+        document.addEventListener('touchstart', startExperience);
+
+        function createFireworks() {
+            const container = document.getElementById('fireworksContainer');
+            const colors = ['#FFD700', '#00FFFF', '#FF1493'];
+            
+            setInterval(() => {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.left = `${Math.random() * 100}%`;
+                firework.style.top = `${Math.random() * 100}%`;
+                firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+                container.appendChild(firework);
+                
+                setTimeout(() => firework.remove(), 1500);
+            }, 300);
+        }
+
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 400; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 4 + 'px';
+                star.style.height = star.style.width;
+                star.style.setProperty('--duration', Math.random() * 4 + 1 + 's');
+                starsContainer.appendChild(star);
+            }
+        }
+
+        function createMeteors() {
+            const meteorsContainer = document.getElementById('meteors');
+            setInterval(() => {
+                const meteor = document.createElement('div');
+                meteor.className = 'meteor';
+                meteor.style.top = Math.random() * 100 + '%';
+                meteor.style.left = Math.random() * 100 + '%';
+                meteorsContainer.appendChild(meteor);
+                setTimeout(() => meteor.remove(), 3000);
+            }, 2000);
+        }
+
+        function initGlitchText() {
+            const glitchText = document.getElementById('glitchText');
+            const words = glitchText.innerText.split(' ');
+            glitchText.innerHTML = words.map(word => 
+                `<span class="glitch-word" 
+                      style="--delay: ${Math.random() * 5}"
+                      data-text="${word}">${word}</span>`
+            ).join(' ');
+
+            setInterval(() => {
+                const words = document.querySelectorAll('.glitch-word');
+                words.forEach(word => {
+                    if(Math.random() > 0.8) {
+                        word.style.animation = 'none';
+                        void word.offsetWidth;
+                        word.style.animation = `glitchTransition 1.5s forwards`;
+                    }
+                });
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
